@@ -1,7 +1,51 @@
 import boto3
-import json
+#import pandas as pd
+# import module
+from tabulate import tabulate
+ses_client = boto3.client('ses',region_name='us-west-2')
 
-ec2 = boto3.client('ec2')
+# if __name__ == '__main__':
 def lambda_handler(event, context):
-    response = ec2.describe_availability_zones()
-    return {"statusCode": 200, "body": json.dumps(response)}
+    my_list=[('Abyaya', 'Hotta', 123), ('yasaswini', 'Kompala',333 ),
+             ('Sathyanarayana', 'Dathrika', 567), ('Praveen', 'Maroju', 221),
+             ('Giridhar', 'Pochareddy', 151)]
+    
+    print(my_list)
+    # create header
+    head = ["Name", "LastName","Number"]
+  
+    # display table
+    print(tabulate(my_list, headers=head, tablefmt="grid"))
+    # table = [['one','two','three'],['four','five','six'],['seven','eight','ten']]
+    second_list=tabulate(my_list,headers=head, tablefmt='html')
+    print((second_list))
+    
+    print("calling the SES Function")
+    CHARSET = "UTF-8"
+    HTML_EMAIL_CONTENT = """ """
+    HTML_EMAIL_CONTENT=second_list
+     
+    
+    response= ses_client.send_email(
+        
+        Destination={
+           
+            "ToAddresses": [
+                "yasaswini.kalamkuntla@wisseninfotech.com",
+            ],
+        },
+        Message={
+            "Body": {
+                "Html": {
+                    "Charset": CHARSET,
+                    "Data": HTML_EMAIL_CONTENT,
+                }
+            },
+            "Subject": {
+                "Charset": CHARSET,
+                "Data": "Amazing Email Tutorial",
+            },
+        },
+        Source="yasaswini.kalamkuntla@wisseninfotech.com",
+        
+    )
