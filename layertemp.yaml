@@ -1,0 +1,24 @@
+Type: AWS::Serverless::Function 
+        Properties:
+            CodeUri: hello-world/
+            Handler: app.lambdaHandler
+            Layers:
+              - !Ref TempConversionDepLayer
+            Events:
+                HelloWorld:
+                    Type: Api
+                    Properties:
+                        Path: /{conversion}/{value}
+                        Method: get
+
+    TempConversionDepLayer:
+        Type: AWS::Serverless::LayerVersion
+        Properties:
+            LayerName: layer456
+            Description: Dependencies for sam app [temp-units-conv]
+            ContentUri: dependencies/
+            CompatibleRuntimes:
+              - Python 3.9
+            
+            LicenseInfo: 'MIT'
+            RetentionPolicy: Retain
